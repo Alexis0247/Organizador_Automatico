@@ -3,18 +3,32 @@ import shutil
 import sys
 
 def organizar_aqui():
+    """
+    Función principal para organizar los archivos en el directorio actual.
+
+    Clasifica los archivos por tipo de extensión y los mueve a una estructura
+    de carpetas jerárquica: 'Categoria_Principal/Subcarpeta_Extension/archivo'.
+    
+    Ejemplo: un archivo 'informe.pdf' se movería a 'Documentos/PDF/informe.pdf'.
+    """
     # 1. Obtener la ruta donde se encuentra el ejecutable o script
     if getattr(sys, 'frozen', False):
+        # El atributo 'frozen' existe en el módulo 'sys' si el código se ha 
+        # compilado en un ejecutable (ej. con PyInstaller, cx_Freeze).
+        # En este caso, la ruta base es el directorio del ejecutable.
         # Si es un ejecutable (.exe)
         ruta_actual = os.path.dirname(sys.executable)
     else:
-        # Si es un script (.py)
+        # Si se ejecuta como un script (.py) normal, usamos la ruta del script.
+        # os.path.abspath(__file__) obtiene la ruta completa del archivo actual.
         ruta_actual = os.path.dirname(os.path.abspath(__file__))
     
-    # Nombre de este archivo para no moverlo
+    # Nombre de este archivo para evitar moverlo.
+    # Necesita lógica para script (.py) o ejecutable (.exe).
     nombre_este_archivo = os.path.basename(sys.executable if getattr(sys, 'frozen', False) else __file__)
 
-    # 2. Diccionario extendido (el mismo que ya teníamos)
+    # 2. Definición del Diccionario de Categorías
+    # Mapea las extensiones de archivo (claves) a las Categorías Principales (valores).
     categorias = {
         # --- Microsoft Office y Documentos ---
         ".pdf": "Documentos",
@@ -81,30 +95,48 @@ def organizar_aqui():
         ".sql": "Datos y Programacion"
     }
 
+    # Cambiar el directorio de trabajo al directorio donde está el script/ejecutable.
     os.chdir(ruta_actual)
 
+    # 3. Iteración y Movimiento de Archivos
     for archivo in os.listdir(ruta_actual):
         # Evitar mover carpetas o este mismo script/ejecutable
         if os.path.isdir(archivo) or archivo == nombre_este_archivo:
             continue
 
+
+        # Separar nombre del archivo y su extensión.
         nombre, extension = os.path.splitext(archivo)
+        # Normalizar la extensión a minúsculas para la búsqueda en el diccionario.
         ext_limpia = extension.lower()
 
-        if ext_limpia: # Solo si tiene extensión
+        if ext_limpia: # Solo procesar archivos que tienen extensión (evita archivos sin nombre o con nombres extraños)
+            # 4. Determinar Categoría y Ruta de Destino
+            # .get(key, default) obtiene la Categoría Principal o "Otros" si no se encuentra.
             categoria_principal = categorias.get(ext_limpia, "Otros")
+
+            # Subcarpeta será el nombre de la extensión en mayúsculas (ej: PDF, DOCX).
             subcarpeta = ext_limpia.replace(".", "").upper()
+
+            # Construir la ruta completa de destino: 'Categoria_Principal/Subcarpeta_Extension'
             ruta_destino = os.path.join(categoria_principal, subcarpeta)
 
+            # 5. Crear el Directorio de Destino
+            # os.makedirs crea directorios recursivamente.
+            # exist_ok=True evita errores si el directorio ya existe.
             os.makedirs(ruta_destino, exist_ok=True)
             
+            # 6. Mover el Archivo
             try:
+                # Mueve el archivo de la ruta actual a la ruta de destino.
                 shutil.move(archivo, os.path.join(ruta_destino, archivo))
                 print(f"✅ Movido: {archivo}")
             except Exception as e:
+                # Manejo de errores (ej. permisos, archivo ya existe y no se puede sobrescribir)
                 print(f"❌ Error moviendo {archivo}: {e}")
 
     print("\n✨ Carpeta organizada con éxito.")
 
 if __name__ == "__main__":
+    # Punto de entrada del script.
     organizar_aqui()
