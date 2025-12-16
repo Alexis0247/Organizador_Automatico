@@ -4,6 +4,9 @@ import sys
 
 def organizar_aqui():
     """
+    La aplicación ejecutable se encuentra en la carpeta "/dist"
+
+    
     Función principal para organizar los archivos en el directorio actual.
 
     Clasifica los archivos por tipo de extensión y los mueve a una estructura
