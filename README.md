@@ -21,6 +21,7 @@ El script organiza los archivos siguiendo este patrón de directorios:
 
 | Categoría | Extensiones Soportadas (Ejemplos) |
 | :--- | :--- |
+| **Documentos de Diseño** | .nlbl |
 | **Documentos** | .pdf, .docx, .xlsx, .txt, .pptx |
 | **Imágenes** | .jpg, .png, .raw, .cr2, .nef (Fotografía Profesional) |
 | **Programación** | .py, .js, .html, .json, .sql, .csv |
