@@ -96,6 +96,9 @@ def organizar_aqui():
         ".py": "Datos y Programacion",
         ".log": "Datos y Programacion",
         ".sql": "Datos y Programacion"
+
+        # --- Archivos para etiquetas ---
+        ".nlbl": "Documentos Flejes"
     }
 
     # Cambiar el directorio de trabajo al directorio donde está el script/ejecutable.
